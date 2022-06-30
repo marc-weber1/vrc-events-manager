@@ -1,0 +1,15 @@
+{
+  "name": "db-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/endpoints.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.1",
+    "@facade/vrc-events-db-model": "file:../db-model"
+  }
+}

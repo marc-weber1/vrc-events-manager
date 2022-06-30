@@ -1,0 +1,61 @@
+version: "3"
+
+services:
+
+  club-invite-bot:
+    container_name: club-invite-bot
+    image: club-invite-bot
+    restart: always
+    build:
+      context: .
+      dockerfile: club-invite-bot.dockerfile
+    env_file:
+      - club-invite-bot/bot.env
+      - db-model/postgres.env
+    environment:
+      - PGHOST=vrc-events-db
+    links:
+      - vrc-events-db
+
+  vrc-events-telegram-bot:
+    container_name: vrc-events-telegram-bot
+    image: vrc-events-telegram-bot
+    restart: always
+    build:
+      context: .
+      dockerfile: events-telegram-bot.dockerfile
+    env_file:
+      - db-model/postgres.env
+      - events-telegram-bot/bot.env
+    environment:
+      - PGHOST=vrc-events-db
+    links:
+      - vrc-events-db
+
+  vrc-events-db-api:
+    container_name: vrc-events-db-api
+    image: vrc-events-db-api
+    restart: always
+    build:
+      context: .
+      dockerfile: db-api.dockerfile
+    env_file:
+      - db-model/postgres.env
+    environment:
+      - PORT=25005
+      - PGHOST=vrc-events-db
+    ports:
+      - "25005:25005"
+    links:
+      - vrc-events-db
+
+  vrc-events-db:
+    container_name: vrc-events-db
+    image: postgres:14.2-alpine
+    restart: always
+    env_file:
+      - db-model/postgres.env
+    volumes:
+      - ./db-cache:/var/lib/postgresql/data
+    ports:
+      - "5431:5431"
